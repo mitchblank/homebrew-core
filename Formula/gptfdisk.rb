@@ -35,12 +35,9 @@ class Gptfdisk < Formula
 
   test do
     system "dd", "if=/dev/zero", "of=test.dmg", "bs=1m", "count=1"
-    output = shell_output("#{bin}/sgdisk -o test.dmg")
-    assert_match "completed successfully", output
-    output = shell_output("#{bin}/sgdisk -p test.dmg")
-    assert_match "GUID", output
-    output = shell_output("#{bin}/gdisk -l test.dmg")
-    assert_match "Found valid GPT with protective MBR", output
+    assert_match "completed successfully", shell_output("#{bin}/sgdisk -o test.dmg")
+    assert_match "GUID", shell_output("#{bin}/sgdisk -p test.dmg")
+    assert_match "Found valid GPT with protective MBR", shell_output("#{bin}/gdisk -l test.dmg")
   end
 end
 
