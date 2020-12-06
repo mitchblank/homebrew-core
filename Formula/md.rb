@@ -17,7 +17,9 @@ class Md < Formula
 
   def install
     cd "md" do
-      system ENV.cc, ENV.cflags, "-o", "md", "md.c"
+      # Xcode 12 made -Wimplicit-function-declaration an error by default so we need to
+      # disable that warning to successfully compile:
+      system ENV.cc, ENV.cflags, "-o", "md", "-Wno-implicit-function-declaration", "md.c"
       bin.install "md"
       man1.install "md.1"
     end
