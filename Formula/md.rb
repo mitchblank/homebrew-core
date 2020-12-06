@@ -15,6 +15,9 @@ class Md < Formula
     sha256 "5faf5907b69c2a53c9bbbcfcb908d24c222181490b69116e09102212382be5ea" => :mavericks
   end
 
+  # https://github.com/Homebrew/homebrew-core/pull/66347#issuecomment-739548996
+  disable! because: :unmaintained
+
   def install
     cd "md" do
       # Xcode 12 made -Wimplicit-function-declaration an error by default so we need to
