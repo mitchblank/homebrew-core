@@ -3,7 +3,6 @@ class Radare2 < Formula
   homepage "https://radare.org"
   url "https://github.com/radareorg/radare2/archive/4.5.1.tar.gz"
   sha256 "4e85b35987bd2ca5881ad9585970b970fe7374814bd383bd1cd62e961a0c228b"
-  # Upstream package unclear if 3.0-only or 3.0-or-later, marking as 3.0-only for now:
   license "LGPL-3.0-only"
   head "https://github.com/radareorg/radare2.git"
 
