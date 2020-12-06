@@ -25,10 +25,4 @@ class Testdisk < Formula
                           "--prefix=#{prefix}"
     system "make", "install"
   end
-
-  test do
-    path = "test.dmg"
-    system "hdiutil", "create", "-megabytes", "10", path
-    system "#{bin}/testdisk", "/list", path
-  end
 end
