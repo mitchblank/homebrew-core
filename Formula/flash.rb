@@ -10,10 +10,4 @@ class Flash < Formula
   def install
     bin.install "flash"
   end
-
-  test do
-    system "hdiutil", "create", "-size", "128k", "test.dmg"
-    output = shell_output("echo foo | #{bin}/flash --device /dev/disk42 test.dmg", 1)
-    assert_match "Please answer yes or no.", output
-  end
 end
