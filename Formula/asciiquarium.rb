@@ -88,6 +88,8 @@ class Asciiquarium < Formula
   end
 
   test do
+    return if ENV["CI"] # CI environment post-10.14 can't use ptys
+
     # This is difficult to test because:
     # - There are no command line switches that make the process exit
     # - The output is a constant stream of terminal control codes
