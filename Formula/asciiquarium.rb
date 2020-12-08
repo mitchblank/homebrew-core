@@ -3,8 +3,8 @@ class Asciiquarium < Formula
   homepage "https://robobunny.com/projects/asciiquarium/html/"
   url "https://robobunny.com/projects/asciiquarium/asciiquarium_1.1.tar.gz"
   sha256 "1b08c6613525e75e87546f4e8984ab3b33f1e922080268c749f1777d56c9d361"
-  license "GPL-2.0"
-  revision 1
+  license "GPL-2.0-or-later"
+  revision 2
 
   livecheck do
     url "https://robobunny.com/projects/asciiquarium/"
@@ -21,9 +21,11 @@ class Asciiquarium < Formula
     sha256 "6b20abf264f40c7123e40f0f34cfc11f0c12a03b1a74a324e3f3a7ae75e94f3f" => :yosemite
   end
 
+  uses_from_macos "ncurses"
+
   resource "Curses" do
-    url "https://cpan.metacpan.org/authors/id/G/GI/GIRAFFED/Curses-1.34.tar.gz"
-    sha256 "808e44d5946be265af5ff0b90f3d0802108e7d1b39b0fe68a4a446fe284d322b"
+    url "https://cpan.metacpan.org/authors/id/G/GI/GIRAFFED/Curses-1.37.tar.gz"
+    sha256 "74707ae3ad19b35bbefda2b1d6bd31f57b40cdac8ab872171c8714c88954db20"
   end
 
   resource "Term::Animation" do
@@ -37,6 +39,39 @@ class Asciiquarium < Formula
     resources.each do |r|
       r.stage do
         system "perl", "Makefile.PL", "INSTALL_BASE=#{libexec}"
+        if (r.name == "Curses") && (MacOS.version >= :big_sur)
+          # Work around a 11.0 problem in MakeMaker:
+          #   https://github.com/Perl-Toolchain-Gang/ExtUtils-MakeMaker/issues/381
+          #
+          # This issue is that due to the changes to how libraries
+          # exist (or, rather, DON'T exist) on the filesystem, usual ways
+          # of detecting libraries do not work.  This extends even
+          # to the MakeMaker that comes bundled with Apple's own
+          # copy of perl (at least as of OS 11.0.1)
+          #
+          # The result is that Makefile.PL generates a Makefile that
+          # does not contain the expected "LDLOADLIBS = -lcurses" line.
+          # The tell is when it prints the diagnostic:
+          #   Warning (mostly harmless): No library found for -lcurses
+          # Since it doesn't find the library, it assumes no flag is needed.
+          #
+          # Normally we could probably work around this by just specifying
+          # an explicit value of LDLOADLIBS on the "make" command line,
+          # but that doesn't work here.  That is because the Makefile
+          # runs the perl script "test.syms" which then opens and re-parses
+          # "Makefile" to find these values and then uses them to introspect
+          # the system's curses library.  If it doesn't find the right
+          # value of LDLOADLIBS *inside the Makefile* it won't find any
+          # symbols and the build will end up not working.
+          #
+          # Therefore we need to actually munge "Makefile" after "Makefile.PL"
+          # runs but before "make" does
+          mk_lines = File.readlines("Makefile")
+          if mk_lines.grep(/^LDLOADLIBS\s*=/).empty?
+            mv "Makefile", "Makefile.orig"
+            File.open("Makefile", "w") { |f| f << "LDLOADLIBS = -lcurses\n" << mk_lines.join << "\n" }
+          end
+        end
         system "make"
         system "make", "install"
       end
