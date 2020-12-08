@@ -3,6 +3,7 @@ class Tpp < Formula
   homepage "https://synflood.at/tpp.html"
   url "https://synflood.at/tpp/tpp-1.3.1.tar.gz"
   sha256 "68e3de94fbfb62bd91a6d635581bcf8671a306fffe615d00294d388ad91e1b5f"
+  license "GPL-2.0-or-later"
 
   bottle do
     cellar :any_skip_relocation
@@ -13,6 +14,8 @@ class Tpp < Formula
     sha256 "8736306dac4a3d2a2ed8bb4dcd1c08c77fb9026b9cde5ad07791eb90eef2392f" => :sierra
     sha256 "25e92e9f229433131cc82cf48a3cec90d19a28a08a56fadcc095b1ecf4df2304" => :el_capitan
   end
+
+  uses_from_macos "ncurses"
 
   resource "ncurses-ruby" do
     url "https://downloads.sourceforge.net/project/ncurses-ruby.berlios/ncurses-ruby-1.3.1.tar.bz2"
@@ -38,7 +41,7 @@ class Tpp < Formula
                                   "#include \"ncurses_wrap.h\"\n#include <sys/time.h>"
 
       inreplace "extconf.rb", '$CFLAGS  += " -g"',
-                              '$CFLAGS  += " -g -DNCURSES_OPAQUE=0"'
+                              '$CFLAGS  += " -g -DNCURSES_OPAQUE=0 -Wno-implicit-function-declaration"'
       system "ruby", "extconf.rb"
       system "make"
       lib_ncurses.install "lib/ncurses_sugar.rb", "ncurses_bin.bundle"
