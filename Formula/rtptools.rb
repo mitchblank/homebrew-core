@@ -7,8 +7,7 @@ class Rtptools < Formula
   head "https://github.com/irtlab/rtptools.git"
 
   livecheck do
-    url "https://github.com/irtlab/rtptools/releases/latest"
-    regex(%r{href=.*?/tag/v?(\d+(?:\.\d+)+)["' >]}i)
+    url :head
   end
 
   bottle do
