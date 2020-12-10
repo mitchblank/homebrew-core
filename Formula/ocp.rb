@@ -17,6 +17,7 @@ class Ocp < Formula
     sha256 "6b40bde3ba007a8b18451502bcf49841d8a3f75ec06a7d6a8e748f508e7dc1f9" => :high_sierra
   end
 
+  depends_on "pkg-config" => :build
   depends_on "xa" => :build
   depends_on "flac"
   depends_on "jpeg-turbo"
