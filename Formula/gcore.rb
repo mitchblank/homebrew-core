@@ -18,6 +18,8 @@ class Gcore < Formula
 
   keg_only :provided_by_macos
 
+  disable! date: "2020-12-11", because: :unmaintained
+
   def install
     system "make"
     bin.install "gcore"
