@@ -28,9 +28,10 @@ class NetSnmp < Formula
     sha256 "669185758aa3a4815f4bbbe533795c4b6969c0c80c573f8c8abfa86911c57492"
   end
 
+  # Clean up some Xcode 12 issues with ./configure
   patch do
-    url "https://github.com/net-snmp/net-snmp/commit/a040e7bfa69c4392720ced3b4018796c2bf7db1d.patch?full_index=1"
-    sha256 "010b41b9efc74aba1d666099f73b7752ef14dc07e91f11cee6d4618d00bca354"
+    url "https://github.com/net-snmp/net-snmp/commit/a7c8c26c48c954a19bca5fdc6ba285396610d7aa.patch?full_index=1"
+    sha256 "8ccc46a3c15d145e5034c0749f3c0e7bd11eca451809ae7f2312dab459e07cec"
   end
 
   def install
