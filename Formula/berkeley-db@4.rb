@@ -24,6 +24,8 @@ class BerkeleyDbAT4 < Formula
   def install
     # BerkeleyDB dislikes parallel builds
     ENV.deparallelize
+    # Work around issues ./configure has with Xcode 12
+    ENV.append "CFLAGS", "-Wno-implicit-function-declaration"
 
     args = %W[
       --disable-debug
