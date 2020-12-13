@@ -7,6 +7,7 @@ class GnuProlog < Formula
   # for now download from GNU which still has the original 1.4.5 available:
   url "https://ftp.gnu.org/gnu/gprolog/gprolog-1.4.5.tar.gz"
   sha256 "bfdcf00e051e0628b4f9af9d6638d4fde6ad793401e58a5619d1cc6105618c7c"
+  license any_of: ["LGPL-3.0-or-later", "GPL-2.0-or-later"]
 
   livecheck do
     url :homepage
