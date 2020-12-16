@@ -20,7 +20,7 @@ class OpenSp < Formula
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "docbook" => :build
-  depends_on "gettext" => :build
+  depends_on "gettext"
   depends_on "ghostscript" => :build
   depends_on "libtool" => :build
   depends_on "xmlto" => :build
