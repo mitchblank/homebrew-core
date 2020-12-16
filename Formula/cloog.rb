@@ -66,6 +66,6 @@ class Cloog < Formula
     EOS
 
     assert_match %r{Generated from #{testpath}/test.cloog by CLooG},
-                 pipe_output("#{bin}/cloog #{testpath}/test.cloog")
+                 shell_output("#{bin}/cloog #{testpath}/test.cloog")
   end
 end
