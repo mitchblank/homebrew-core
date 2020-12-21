@@ -46,11 +46,22 @@ class SubversionAT18 < Formula
     serf_prefix = libexec/"serf"
 
     resource("serf").stage do
-      # SConstruct merges in gssapi linkflags using scons's MergeFlags,
-      # but that discards duplicate values - including the duplicate
-      # values we want, like multiple -arch values for a universal build.
-      # Passing 0 as the `unique` kwarg turns this behaviour off.
-      inreplace "SConstruct", "unique=1", "unique=0"
+      inreplace "SConstruct" do |s|
+        # SConstruct merges in gssapi linkflags using scons's MergeFlags,
+        # but that discards duplicate values - including the duplicate
+        # values we want, like multiple -arch values for a universal build.
+        # Passing 0 as the `unique` kwarg turns this behaviour off.
+        s.gsub! "unique=1", "unique=0"
+        # Fixes for running under Python 3
+        s.gsub! "print 'Warning: Used unknown variables:', ', '.join(unknown.keys())",
+        "print('Warning: Used unknown variables:', ', '.join(unknown.keys()))"
+        s.gsub! "match = re.search('SERF_MAJOR_VERSION ([0-9]+).*'",
+        "match = re.search(b'SERF_MAJOR_VERSION ([0-9]+).*'"
+        s.gsub! "'SERF_MINOR_VERSION ([0-9]+).*'",
+        "b'SERF_MINOR_VERSION ([0-9]+).*'"
+        s.gsub! "'SERF_PATCH_VERSION ([0-9]+)'",
+        "b'SERF_PATCH_VERSION ([0-9]+)'"
+      end
 
       # scons ignores our compiler and flags unless explicitly passed
       args = %W[PREFIX=#{serf_prefix} GSSAPI=/usr CC=#{ENV.cc}
