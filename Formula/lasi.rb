@@ -3,7 +3,8 @@ class Lasi < Formula
   homepage "https://www.unifont.org/lasi/"
   url "https://downloads.sourceforge.net/project/lasi/lasi/1.1.3%20Source/libLASi-1.1.3.tar.gz"
   sha256 "5e5d2306f7d5a275949fb8f15e6d79087371e2a1caa0d8f00585029d1b47ba3b"
-  revision 1
+  license "GPL-2.0-or-later"
+  revision 2
   head "https://svn.code.sf.net/p/lasi/code/trunk"
 
   livecheck do
@@ -27,7 +28,21 @@ class Lasi < Formula
     # None is valid, but lasi's CMakeFiles doesn't think so for some reason
     args = std_cmake_args - %w[-DCMAKE_BUILD_TYPE=None]
 
+    # std_cmake_args tries to set CMAKE_INSTALL_LIBDIR to a prefix-relative
+    # directory, but plplot's cmake scripts don't like that
+    args.map! { |x| x.start_with?("-DCMAKE_INSTALL_LIBDIR=") ? "-DCMAKE_INSTALL_LIBDIR=#{lib}" : x }
+
     system "cmake", ".", "-DCMAKE_BUILD_TYPE=Release", *args
+
+    inreplace "examples/Makefile.examples" do |s|
+      # This example Makefile ends up with a reference to the Homebrew build
+      # shims unless we tweak it:
+      s.gsub! %r{^CXX = .*/}, "CXX = "
+      # Also the install $LIBDIR ends up as part of the example PKG_CONFIG_PATH
+      # but we should use the opt version in that file
+      s.gsub! %r{PKG_CONFIG_PATH=[^:]+/lib/pkgconfig:}, "PKG_CONFIG_PATH=#{opt_lib}/pkgconfig:"
+    end
+
     system "make", "install"
   end
 end
