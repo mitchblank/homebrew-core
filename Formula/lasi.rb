@@ -25,23 +25,17 @@ class Lasi < Formula
   depends_on "pango"
 
   def install
-    # None is valid, but lasi's CMakeFiles doesn't think so for some reason
-    args = std_cmake_args - %w[-DCMAKE_BUILD_TYPE=None]
+    args = std_cmake_args.dup
 
     # std_cmake_args tries to set CMAKE_INSTALL_LIBDIR to a prefix-relative
-    # directory, but plplot's cmake scripts don't like that
+    # directory, but lasi's cmake scripts don't like that
     args.map! { |x| x.start_with?("-DCMAKE_INSTALL_LIBDIR=") ? "-DCMAKE_INSTALL_LIBDIR=#{lib}" : x }
 
-    system "cmake", ".", "-DCMAKE_BUILD_TYPE=Release", *args
+    # If we build/install examples they result in shim/cellar paths in the
+    # installed files.  Instead we don't build them at all.
+    inreplace "CMakeLists.txt", "add_subdirectory(examples)", ""
 
-    inreplace "examples/Makefile.examples" do |s|
-      # This example Makefile ends up with a reference to the Homebrew build
-      # shims unless we tweak it:
-      s.gsub! %r{^CXX = .*/}, "CXX = "
-      # Also the install $LIBDIR ends up as part of the example PKG_CONFIG_PATH
-      # but we should use the opt version in that file
-      s.gsub! %r{PKG_CONFIG_PATH=[^:]+/lib/pkgconfig:}, "PKG_CONFIG_PATH=#{opt_lib}/pkgconfig:"
-    end
+    system "cmake", ".", "-DCMAKE_BUILD_TYPE=Release", *args
 
     system "make", "install"
   end
