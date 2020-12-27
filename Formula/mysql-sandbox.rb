@@ -20,6 +20,8 @@ class MysqlSandbox < Formula
     sha256 "1829b23da5960830f426300cac7b4820f21a4f801a1260357394b205bb9340a4" => :sierra
     sha256 "77ab4eb3bbd5d374020081b3505cd7f18de1500019af148f00ebef13a34e4222" => :el_capitan
   end
+  
+  uses_from_macos "perl"
 
   def install
     ENV["PERL_LIBDIR"] = lib/"perl5"
