@@ -8,7 +8,7 @@ class MysqlSandbox < Formula
   head "https://github.com/datacharmer/mysql-sandbox.git"
 
   livecheck do
-    url :head
+    url :stable
     strategy :github_latest
   end
 
