@@ -7,11 +7,6 @@ class Feedgnuplot < Formula
   revision 1
   head "https://github.com/dkogan/feedgnuplot.git"
 
-  livecheck do
-    url :head
-    regex(/^v?(\d+(?:\.\d+)+)$/i)
-  end
-
   bottle do
     cellar :any_skip_relocation
     sha256 "7d394a581a614dcc5130eac02310e58f994067b94a8dbd413c983157e3d37cc2" => :catalina
