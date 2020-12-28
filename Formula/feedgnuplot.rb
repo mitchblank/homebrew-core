@@ -17,7 +17,7 @@ class Feedgnuplot < Formula
   depends_on "gnuplot"
 
   def install
-    system "perl", "Makefile.PL", "INSTALL_BASE=#{prefix}", "INSTALLSITEMAN1DIR=#{man1}", "INSTALLSITEMAN3DIR=#{man3}"
+    system "perl", "Makefile.PL", "INSTALL_BASE=#{prefix}", "INSTALLSITEMAN1DIR=#{man1}"
     system "make"
     system "make", "install"
 
