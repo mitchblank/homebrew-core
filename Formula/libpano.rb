@@ -4,6 +4,7 @@ class Libpano < Formula
   url "https://downloads.sourceforge.net/project/panotools/libpano13/libpano13-2.9.19/libpano13-2.9.19.tar.gz"
   version "13-2.9.19"
   sha256 "037357383978341dea8f572a5d2a0876c5ab0a83dffda431bd393357e91d95a8"
+  license "GPL-2.0-or-later"
   revision 2
 
   livecheck do
@@ -29,6 +30,28 @@ class Libpano < Formula
     system "./configure", "--disable-dependency-tracking",
                           "--prefix=#{prefix}",
                           "--mandir=#{man}"
+
+    # First, remove places in libpano that use the "uint16" and "uint32"
+    # types from libtiff described below:
+    inreplace %w[ptstitch.c ColourBrightness.c], /\buint16\b/, "uint16_t"
+    inreplace %w[tiff.c file.c ColourBrightness.c], /\buint32\b/, "uint32_t"
+
+    # libtiff defines its own typenames like "int32".  Unfortunatley, OS/X
+    # system headers (specicially cssmconfig.h in Security.framework) uses
+    # these names as well.  On the MacOS 11-era SDK that libSecurity include
+    # gets included by some deep path from a system header, causing a name
+    # conflict.  As a gross workaround, use preprocessor macros to trick libtiff
+    # into giving them their own private names.  We may be able to drop
+    # this in the future if libtiff renames these types.
+    # See https://gitlab.com/libtiff/libtiff/-/merge_requests/51#note_476410984
+    type_conflicts = %w[int8 uint8 int16 uint16 int32 uint32 int64 uint64]
+    type_redefs = type_conflicts.map { |t| "#define #{t} libtiff_#{t}\n" }.join
+    type_undefs = type_conflicts.map { |t| "#undef #{t}\n" }.join
+    inreplace %w[filter.c pttiff.h tiff.c ColourBrightness.c sys_win.c
+                 tools/PTcrop.c tools/PTtiffdump.c tools/PTmender.c],
+              /^(#include [<"]tiff[a-z]*\.h[">])/,
+              "#{type_redefs}\\1\n#{type_undefs}"
+
     system "make", "install"
   end
 end
