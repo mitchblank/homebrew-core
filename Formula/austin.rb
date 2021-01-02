@@ -26,6 +26,6 @@ class Austin < Formula
   end
 
   test do
-    shell_output("#{bin}/austin #{Formula["python@3.9"].opt_bin}/python3 -c \"print('Test')\"", 33)
+    shell_output("#{bin}/austin #{Formula["python@3.9"].opt_bin}/python3 -c \"from time import sleep; sleep(1)\"", 37)
   end
 end
