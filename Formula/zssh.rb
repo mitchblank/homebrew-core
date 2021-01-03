@@ -3,7 +3,7 @@ class Zssh < Formula
   homepage "https://zssh.sourceforge.io/"
   url "https://downloads.sourceforge.net/project/zssh/zssh/1.5/zssh-1.5c.tgz"
   sha256 "a2e840f82590690d27ea1ea1141af509ee34681fede897e58ae8d354701ce71b"
-  license "GPL-2.0"
+  license "GPL-2.0-only"
 
   livecheck do
     url :stable
@@ -21,6 +21,7 @@ class Zssh < Formula
     sha256 "94b16bb29616a839134527fd869ac40a8fb5fa88b0048d1a93a828e306c2a270" => :mavericks
   end
 
+  depends_on "autoconf" => :build
   depends_on "lrzsz"
 
   on_linux do
@@ -29,6 +30,7 @@ class Zssh < Formula
   end
 
   def install
+    system "autoreconf", "--verbose", "--install", "--force"
     system "./configure", "--disable-debug", "--disable-dependency-tracking",
                           "--prefix=#{prefix}"
     system "make"
