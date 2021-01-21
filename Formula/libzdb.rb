@@ -27,12 +27,7 @@ class Libzdb < Formula
   def install
     system "./configure", "--prefix=#{prefix}", "--disable-dependency-tracking"
     system "make", "install"
-    # The test files that end up in share/libzdb/test/ have @SED@ replaced
-    # with the configure-detected one.  However, install of a homebrew
-    # build that is the build-shim's copy of sed which we definitely don't
-    # want dangling references to!
-    inreplace %w[test/Makefile test/unit test/zdbpp test/select test/pool test/exception], %r{/[^ ]+/sed}, "sed"
-    pkgshare.install "test"
+    (pkgshare/"test").install Dir["test/*.{c,cpp}"]
   end
 
   test do
