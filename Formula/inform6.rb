@@ -19,6 +19,8 @@ class Inform6 < Formula
   end
 
   def install
+    # Disable parallel build until release with https://gitlab.com/DavidGriffith/inform6unix/-/commit/dab07d5c83a42e1c52e4058d6a31a8137f54b59c
+    # ships; see https://gitlab.com/DavidGriffith/inform6unix/-/issues/26
     ENV.deparallelize
     system "make", "PREFIX=#{prefix}", "MAN_PREFIX=#{man}", "install"
   end
