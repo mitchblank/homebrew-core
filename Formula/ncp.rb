@@ -3,7 +3,13 @@ class Ncp < Formula
   homepage "https://www.fefe.de/ncp/"
   url "https://dl.fefe.de/ncp-1.2.4.tar.bz2"
   sha256 "6cfa72edd5f7717bf7a4a93ccc74c4abd89892360e2e0bb095a73c24b9359b88"
+  revision 1
   head ":pserver:cvs:@cvs.fefe.de:/cvs", using: :cvs
+
+  livecheck do
+    url :homepage
+    regex(/href=.*?ncp[._-]v?(\d+(?:\.\d+)+)\.t/i)
+  end
 
   bottle do
     rebuild 1
