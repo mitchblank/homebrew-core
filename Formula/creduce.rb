@@ -31,7 +31,7 @@ class Creduce < Formula
   end
 
   head do
-    url "https://github.com/csmith-project/creduce.git"
+    url "https://github.com/csmith-project/creduce.git", branch: "master"
     depends_on "llvm"
   end
 
