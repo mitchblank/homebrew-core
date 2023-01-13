@@ -25,18 +25,8 @@ class Tz < Formula
   end
 
   test do
-    # Bubbletea-based apps are hard to test even under PTY.spawn (or via
-    # expect) because they rely on vt100-like answerback support, such as
-    # "<ESC>[6n" to report the cursor position.  For now we just run
-    # the command for a second and see that it tried to send some ANSI out of it.
-    require "pty"
-    r, _, pid = PTY.spawn "#{bin}/tz", "-q"
-    sleep 1
-    Process.kill("TERM", pid)
-    begin
-      assert_match(/\e\[/, r.read)
-    rescue Errno::EIO
-      # GNU/Linux raises EIO when read is done on closed pty
-    end
+    assert_match "US/Eastern", shell_output("#{bin}/tz --list")
+
+    assert_match version.to_s, shell_output("#{bin}/tz -v")
   end
 end
